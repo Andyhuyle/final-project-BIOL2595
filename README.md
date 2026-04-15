@@ -105,4 +105,6 @@ Features include:
 ---
 
 ## 📁 Repository Structure  
-- current files: 
+- current directories:
+  - multimodal_model: contains train.py (main model)
+  - scripts: contains exploratory data analysis and cohort building code
