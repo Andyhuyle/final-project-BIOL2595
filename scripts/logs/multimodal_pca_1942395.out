@@ -1,0 +1,23 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 1942395
+##  Job Name : multimodal_pca
+##  Nodelist : gpu3005
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Mon Apr 27 08:19:06 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA L40S
+
+Starting training run : multimodal_pca
+Log  : /oscar/data/class/biol1595_2595/students/hgle/logs/multimodal_pca_20260427_201906.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/logs/multimodal_pca_20260427_201906.err
+
+
+Training completed successfully.
+Log saved to: /oscar/data/class/biol1595_2595/students/hgle/logs/multimodal_pca_20260427_201906.log

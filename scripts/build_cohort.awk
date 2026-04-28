@@ -20,9 +20,10 @@ FNR!=NR {
 
     if ((sid in patient) && item == psa_itemid) {
 
+        charttime = $7
         valuenum  = $10
         valueuom  = $11
 
-        print sid, valuenum, valueuom
+        print sid, charttime, valuenum, valueuom
     }
 }

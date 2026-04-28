@@ -4,8 +4,8 @@ import pandas as pd
 
 def main():
 
-    lab_file_name               = "/oscar/data/shared/ursa/mimic-iv/hosp/3.1/labevents.csv"
-    lab_subset_output_file      = "/oscar/data/class/biol1595_2595/students/hgle/pts_with_psa_labs.csv"
+    lab_file_name          = "/oscar/data/shared/ursa/mimic-iv/hosp/3.1/labevents.csv"
+    lab_subset_output_file = "/oscar/data/class/biol1595_2595/students/hgle/pts_with_psa_labs.csv"
 
     total_pt_cohort = set()
 
@@ -13,7 +13,7 @@ def main():
     labs_df = pd.read_csv(lab_file_name)
 
     print("filtering rows")
-    df = df.iloc[:, [1, 4, 14]]
+    df = labs_df.iloc[:, [1, 4, 14]]
     df.columns = ["subject_id", "itemid", "priority"]
 
     TARGET_ITEMID = 50974 # psa lab test
@@ -30,7 +30,7 @@ def main():
 
     print("Filtered rows:", len(df_filtered))
     print("Unique patients:", len(total_pt_cohort))
-    print("Outputs saved to:", output_file)
+    print("Outputs saved to:", lab_subset_output_file)
     
 main()
     

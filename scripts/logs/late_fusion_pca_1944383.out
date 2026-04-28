@@ -1,0 +1,16 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 1944383
+##  Job Name : late_fusion_pca
+##  Nodelist : gpu2113
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Mon Apr 27 11:52:15 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+CUDA: True | GPU: NVIDIA GeForce RTX 3090
+
+FAILED (exit 2) — check: /oscar/data/class/biol1595_2595/students/hgle/logs/late_fusion_20260427_235215.err
+python: can't open file '/oscar/data/class/biol1595_2595/students/hgle/multimodal_model/late_fusion_baseline.py': [Errno 2] No such file or directory
+/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/late_fusion_baseline.py
