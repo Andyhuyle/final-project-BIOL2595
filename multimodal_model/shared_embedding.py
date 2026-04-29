@@ -51,7 +51,7 @@ IMAGE_DIR    = "/oscar/data/shared/ursa/kaggle_panda/train_images"
 EHR_MATRIX   = "/oscar/data/class/biol1595_2595/students/hgle/extracted/ehr_feature_matrix_balanced.csv"
 EHR_LABELS   = "/oscar/data/class/biol1595_2595/students/hgle/extracted/ehr_severity_balanced.csv"
 PANDA_CSV    = "/oscar/data/class/biol1595_2595/students/hgle/extracted/panda_balanced.csv"
-OUT_DIR      = "/oscar/data/class/biol1595_2595/students/hgle/outputs"
+OUT_DIR      = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/shared_embedding"
 
 BATCH_SIZE   = 16
 EPOCHS       = 25

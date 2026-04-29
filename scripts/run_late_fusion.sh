@@ -12,7 +12,7 @@
 
 SCRIPT="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/late_fusion_baseline.py"
 VENV="/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv"
-LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/logs"
+LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs"
 
 mkdir -p "$LOG_DIR" logs
 

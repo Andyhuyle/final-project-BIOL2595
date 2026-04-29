@@ -9,3 +9,7 @@
 ###############################################################################
 Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
 Version : Python 3.9.21
+CUDA: True | GPU: NVIDIA GeForce RTX 3090
+
+Late fusion training completed.
+Log: /oscar/data/class/biol1595_2595/students/hgle/logs/late_fusion_20260427_235419.log
