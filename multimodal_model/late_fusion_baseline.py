@@ -18,6 +18,16 @@ The key difference from contrastive learning:
     - Contrastive: both encoders learn a SHARED latent space aligned by severity
     - Late fusion: each encoder learns independently, combined only at inference
 
+Standard ML metrics reported (consistent with multimodal_contrastive.py):
+    - Macro F1, Macro Precision, Macro Recall
+    - Macro AUROC (One-vs-Rest)
+    - Per-class F1, Precision, Recall, AUROC
+    - Top-1 Accuracy, Top-5 Accuracy (argmax over softmax)
+    - Matthews Correlation Coefficient (MCC)
+    - Cohen's Kappa
+    - Confusion matrix (saved as PNG)
+    - Calibration: Expected Calibration Error (ECE)
+
 Usage:
     python late_fusion_baseline.py
 """
@@ -34,10 +44,13 @@ import tifffile
 from sklearn.metrics import (
     f1_score, precision_score, recall_score,
     roc_auc_score, classification_report,
-    confusion_matrix, ConfusionMatrixDisplay
+    confusion_matrix, ConfusionMatrixDisplay,
+    matthews_corrcoef, cohen_kappa_score,
+    top_k_accuracy_score,
 )
 from sklearn.preprocessing import label_binarize
 from sklearn.model_selection import train_test_split
+from sklearn.calibration import calibration_curve
 from tqdm import tqdm
 import matplotlib
 matplotlib.use("Agg")
@@ -233,39 +246,143 @@ def get_predictions(model, loader, is_image):
     return np.array(all_labels), np.array(all_preds), np.array(all_probs)
 
 
+def expected_calibration_error(y_true, y_prob, n_bins=10):
+    """
+    Expected Calibration Error (ECE) for multiclass problems.
+    Computed per-class (One-vs-Rest) then averaged.
+    """
+    n_classes = y_prob.shape[1]
+    ece_per_class = []
+    for c in range(n_classes):
+        binary_true = (y_true == c).astype(int)
+        prob_c      = y_prob[:, c]
+        bins        = np.linspace(0, 1, n_bins + 1)
+        ece         = 0.0
+        for i in range(n_bins):
+            mask = (prob_c >= bins[i]) & (prob_c < bins[i + 1])
+            if mask.sum() == 0:
+                continue
+            acc  = binary_true[mask].mean()
+            conf = prob_c[mask].mean()
+            ece += (mask.sum() / len(y_true)) * abs(acc - conf)
+        ece_per_class.append(ece)
+    return float(np.mean(ece_per_class))
+
+
+def topk_accuracy_from_probs(y_true, y_prob, k=5):
+    """Top-k accuracy: correct if true label is among the k highest-prob classes."""
+    k = min(k, y_prob.shape[1])
+    return top_k_accuracy_score(y_true, y_prob, k=k)
+
+
 def report_metrics(y_true, y_pred, y_prob, name, out_dir):
-    classes   = sorted(np.unique(y_true))
+    """
+    Compute and print the full standardized metric suite.
+
+    Metrics reported
+    ----------------
+    Aggregate (macro-averaged across classes):
+        Macro F1, Macro Precision, Macro Recall, Macro AUROC,
+        Top-1 Accuracy, Top-5 Accuracy,
+        Matthews Correlation Coefficient (MCC), Cohen's Kappa,
+        Expected Calibration Error (ECE)
+
+    Per-class (One-vs-Rest):
+        F1, Precision, Recall, AUROC
+
+    Visual outputs:
+        Confusion matrix PNG, saved to out_dir
+    """
+    classes   = list(range(NUM_CLASSES))
     label_str = [SEVERITY_NAMES[c] for c in classes]
-
-    macro_f1  = f1_score(y_true, y_pred, average="macro")
-    macro_pre = precision_score(y_true, y_pred, average="macro")
-    macro_rec = recall_score(y_true, y_pred, average="macro")
     y_bin     = label_binarize(y_true, classes=classes)
-    macro_auc = roc_auc_score(y_bin, y_prob, average="macro", multi_class="ovr")
 
-    print(f"\n  {name}")
-    print(f"  {'Macro F1':<20}: {macro_f1:.3f}")
-    print(f"  {'Macro Precision':<20}: {macro_pre:.3f}")
-    print(f"  {'Macro Recall':<20}: {macro_rec:.3f}")
-    print(f"  {'Macro AUROC':<20}: {macro_auc:.3f}")
-    print()
-    print(classification_report(y_true, y_pred, target_names=label_str, digits=3))
+    # --- Aggregate metrics ---
+    macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=0)
+    macro_pre   = precision_score(y_true, y_pred, average="macro", zero_division=0)
+    macro_rec   = recall_score(y_true, y_pred, average="macro", zero_division=0)
+    macro_auc   = roc_auc_score(y_bin, y_prob, average="macro", multi_class="ovr")
+    top1_acc    = (y_true == y_pred).mean()
+    top5_acc    = topk_accuracy_from_probs(y_true, y_prob, k=5)
+    mcc         = matthews_corrcoef(y_true, y_pred)
+    kappa       = cohen_kappa_score(y_true, y_pred)
+    ece         = expected_calibration_error(y_true, y_prob)
 
+    # --- Per-class metrics ---
+    per_f1  = f1_score(y_true, y_pred, average=None, labels=classes, zero_division=0)
+    per_pre = precision_score(y_true, y_pred, average=None, labels=classes, zero_division=0)
+    per_rec = recall_score(y_true, y_pred, average=None, labels=classes, zero_division=0)
+    per_auc = roc_auc_score(y_bin, y_prob, average=None, multi_class="ovr")
+
+    # --- Print ---
+    sep = "  " + "-" * 52
+    print(f"\n  {'━'*52}")
+    print(f"  {name}")
+    print(f"  {'━'*52}")
+    print(f"  {'Metric':<30} {'Value':>10}")
+    print(sep)
+    print(f"  {'Top-1 Accuracy':<30} {top1_acc:>10.3f}")
+    print(f"  {'Top-5 Accuracy':<30} {top5_acc:>10.3f}")
+    print(sep)
+    print(f"  {'Macro F1':<30} {macro_f1:>10.3f}")
+    print(f"  {'Macro Precision':<30} {macro_pre:>10.3f}")
+    print(f"  {'Macro Recall':<30} {macro_rec:>10.3f}")
+    print(f"  {'Macro AUROC (OvR)':<30} {macro_auc:>10.3f}")
+    print(sep)
+    print(f"  {'MCC':<30} {mcc:>10.3f}")
+    print(f"  {'Cohen Kappa':<30} {kappa:>10.3f}")
+    print(f"  {'ECE':<30} {ece:>10.3f}")
+    print(sep)
+
+    print(f"\n  {'Per-class breakdown':}")
+    print(f"  {'Class':<12} {'F1':>7} {'Prec':>7} {'Rec':>7} {'AUROC':>7}")
+    print(f"  {'-'*46}")
+    for i, lbl in enumerate(label_str):
+        print(f"  {lbl:<12} {per_f1[i]:>7.3f} {per_pre[i]:>7.3f} "
+              f"{per_rec[i]:>7.3f} {per_auc[i]:>7.3f}")
+
+    print(f"\n  Full classification report:")
+    print(classification_report(y_true, y_pred, target_names=label_str,
+                                digits=3, zero_division=0))
+
+    # --- Confusion matrix ---
     cm  = confusion_matrix(y_true, y_pred, labels=classes)
     fig, ax = plt.subplots(figsize=(6, 5))
     ConfusionMatrixDisplay(cm, display_labels=label_str).plot(
         ax=ax, colorbar=True, cmap="Blues"
     )
-    ax.set_title(f"{name}\nF1={macro_f1:.3f}  AUROC={macro_auc:.3f}")
+    ax.set_title(
+        f"{name}\n"
+        f"F1={macro_f1:.3f}  AUROC={macro_auc:.3f}  "
+        f"MCC={mcc:.3f}  κ={kappa:.3f}"
+    )
     plt.tight_layout()
-    path = os.path.join(out_dir,
-           f"cm_{name.lower().replace(' ','_').replace('/','_')}.png")
-    plt.savefig(path, dpi=150); plt.close()
-    print(f"  Confusion matrix -> {path}")
+    cm_path = os.path.join(
+        out_dir,
+        f"cm_{name.lower().replace(' ','_').replace('/','_')}.png"
+    )
+    plt.savefig(cm_path, dpi=150)
+    plt.close()
+    print(f"  Confusion matrix -> {cm_path}")
 
-    return {"name": name, "macro_f1": macro_f1,
-            "macro_pre": macro_pre, "macro_rec": macro_rec,
-            "macro_auc": macro_auc}
+    return {
+        "name":      name,
+        # aggregate
+        "top1_acc":  top1_acc,
+        "top5_acc":  top5_acc,
+        "macro_f1":  macro_f1,
+        "macro_pre": macro_pre,
+        "macro_rec": macro_rec,
+        "macro_auc": macro_auc,
+        "mcc":       mcc,
+        "kappa":     kappa,
+        "ece":       ece,
+        # per-class (stored as dicts)
+        "per_f1":    {label_str[i]: float(per_f1[i])  for i in range(len(classes))},
+        "per_pre":   {label_str[i]: float(per_pre[i]) for i in range(len(classes))},
+        "per_rec":   {label_str[i]: float(per_rec[i]) for i in range(len(classes))},
+        "per_auc":   {label_str[i]: float(per_auc[i]) for i in range(len(classes))},
+    }
 
 # =====================
 # MAIN
@@ -328,7 +445,7 @@ ehr_model  = EHRClassifier(X_ehr.shape[1]).to(DEVICE)
 ehr_optim  = torch.optim.Adam(ehr_model.parameters(), lr=1e-4, weight_decay=1e-5)
 ehr_sched  = torch.optim.lr_scheduler.CosineAnnealingLR(ehr_optim, T_max=EPOCHS)
 ehr_scaler = torch.cuda.amp.GradScaler()
-train_model(ehr_model, ehr_test_dl, ehr_optim, ehr_sched, ehr_scaler, EPOCHS, is_image=False)
+train_model(ehr_model, ehr_train_dl, ehr_optim, ehr_sched, ehr_scaler, EPOCHS, is_image=False)
 
 # --- Evaluate ---
 print("\nStep 3/3 — Evaluation...")
@@ -347,22 +464,50 @@ results.append(report_metrics(
     y_img_true[:n], fused.argmax(axis=1), fused, "Late Fusion", OUT_DIR
 ))
 
-# --- Summary ---
-print("\n" + "=" * 60)
+# --- Save probability arrays for AUROC plotting (plot_auroc.py) ---
+np.save(os.path.join(OUT_DIR, 'y_true_img.npy'),   y_img_true)
+np.save(os.path.join(OUT_DIR, 'y_prob_img.npy'),   y_img_prob)
+np.save(os.path.join(OUT_DIR, 'y_true_ehr.npy'),   y_ehr_true)
+np.save(os.path.join(OUT_DIR, 'y_prob_ehr.npy'),   y_ehr_prob)
+np.save(os.path.join(OUT_DIR, 'y_true_fused.npy'), y_img_true[:n])
+np.save(os.path.join(OUT_DIR, 'y_prob_fused.npy'), fused)
+print('  Probability arrays saved for AUROC plotting.')
+
+# --- Summary Table ---
+print("\n" + "=" * 70)
 print("  Comparison Table")
-print("=" * 60)
-print(f"  {'Model':<35} {'F1':>6} {'AUROC':>7}")
-print(f"  {'-'*50}")
+print("=" * 70)
+print(f"  {'Model':<35} {'Top-1':>6} {'Top-5':>6} {'F1':>6} {'AUROC':>7} "
+      f"{'MCC':>6} {'κ':>6} {'ECE':>6}")
+print(f"  {'-'*65}")
 for r in results:
-    print(f"  {r['name']:<35} {r['macro_f1']:>6.3f} {r['macro_auc']:>7.3f}")
-print(f"  {'─'*50}")
-print(f"  {'Contrastive retrieval F1':<35} {'0.664':>6} {'  —':>7}")
-print(f"  {'Chance baseline':<35} {'0.333':>6} {'0.500':>7}")
+    print(f"  {r['name']:<35} {r['top1_acc']:>6.3f} {r['top5_acc']:>6.3f} "
+          f"{r['macro_f1']:>6.3f} {r['macro_auc']:>7.3f} "
+          f"{r['mcc']:>6.3f} {r['kappa']:>6.3f} {r['ece']:>6.3f}")
+
+print(f"  {'-'*65}")
+print(f"  {'Contrastive retrieval':<35} {'0.664':>6} {'   —':>6} {'0.664':>6} "
+      f"{'  —':>7} {'  —':>6} {'  —':>6} {'  —':>6}")
+print(f"  {'Chance baseline':<35} {'0.333':>6} {'1.000':>6} {'0.333':>6} "
+      f"{'0.500':>7} {'0.000':>6} {'0.000':>6} {'  —':>6}")
 print()
 print("  NOTE: Late fusion F1 uses label supervision during training.")
 print("  Contrastive retrieval F1 does not — making it a harder task.")
+print("  Top-5 is not meaningful for 3-class problems (always ~1.0).")
 
-pd.DataFrame(results).to_csv(os.path.join(OUT_DIR,"late_fusion_results.csv"), index=False)
+# --- Save ---
+# Flatten per-class dicts into columns for CSV
+rows = []
+for r in results:
+    flat = {k: v for k, v in r.items() if not isinstance(v, dict)}
+    for metric in ("per_f1", "per_pre", "per_rec", "per_auc"):
+        for cls, val in r[metric].items():
+            flat[f"{metric}_{cls}"] = val
+    rows.append(flat)
+
+pd.DataFrame(rows).to_csv(
+    os.path.join(OUT_DIR, "late_fusion_results.csv"), index=False
+)
 torch.save(img_model.state_dict(), os.path.join(OUT_DIR, "image_classifier.pt"))
 torch.save(ehr_model.state_dict(), os.path.join(OUT_DIR, "ehr_classifier.pt"))
 print(f"\n  All outputs saved to {OUT_DIR}")

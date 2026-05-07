@@ -1,0 +1,45 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 2270455
+##  Job Name : multimodal_pca
+##  Nodelist : gpu3001
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Tue May  5 11:18:28 AM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA L40S
+
+Starting training run : multimodal_pca
+Log  : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260505_111828.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260505_111828.err
+
+
+Training FAILED (exit code 1)
+Check error log: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260505_111828.err
+
+Last 20 lines of error log:
+Epoch 25/25:  97%|█████████▋| 209/215 [00:19<00:00, 10.60it/s, loss=3.2026, neg=0.774, pos=0.912, top1=0.688][A
+Epoch 25/25:  99%|█████████▊| 212/215 [00:19<00:00, 12.84it/s, loss=3.2026, neg=0.774, pos=0.912, top1=0.688][A
+Epoch 25/25:  99%|█████████▊| 212/215 [00:19<00:00, 12.84it/s, loss=3.1979, neg=0.827, pos=0.927, top1=0.500][A
+Epoch 25/25:  99%|█████████▊| 212/215 [00:19<00:00, 12.84it/s, loss=3.2202, neg=0.842, pos=0.919, top1=0.688][A
+Epoch 25/25: 100%|█████████▉| 214/215 [00:19<00:00, 13.19it/s, loss=3.2202, neg=0.842, pos=0.919, top1=0.688][A
+Epoch 25/25: 100%|█████████▉| 214/215 [00:19<00:00, 13.19it/s, loss=3.2846, neg=0.853, pos=0.910, top1=0.625][A
+                                                                                                             [AEpochs: 100%|██████████| 25/25 [08:02<00:00, 19.44s/it]Epochs: 100%|██████████| 25/25 [08:02<00:00, 19.29s/it]
+Embedding:   0%|          | 0/108 [00:00<?, ?it/s]Embedding:   1%|          | 1/108 [00:01<03:17,  1.85s/it]Embedding:   3%|▎         | 3/108 [00:01<00:54,  1.93it/s]Embedding:   5%|▍         | 5/108 [00:02<00:32,  3.21it/s]Embedding:   6%|▋         | 7/108 [00:02<00:20,  4.95it/s]Embedding:   8%|▊         | 9/108 [00:02<00:14,  6.85it/s]Embedding:  10%|█         | 11/108 [00:02<00:17,  5.59it/s]Embedding:  12%|█▏        | 13/108 [00:03<00:13,  6.93it/s]Embedding:  14%|█▍        | 15/108 [00:03<00:18,  5.16it/s]Embedding:  16%|█▌        | 17/108 [00:03<00:13,  6.69it/s]Embedding:  18%|█▊        | 19/108 [00:04<00:16,  5.41it/s]Embedding:  19%|█▉        | 21/108 [00:04<00:12,  6.92it/s]Embedding:  21%|██▏       | 23/108 [00:04<00:16,  5.19it/s]Embedding:  23%|██▎       | 25/108 [00:05<00:12,  6.64it/s]Embedding:  25%|██▌       | 27/108 [00:05<00:14,  5.60it/s]Embedding:  27%|██▋       | 29/108 [00:05<00:11,  6.78it/s]Embedding:  29%|██▊       | 31/108 [00:06<00:15,  5.13it/s]Embedding:  31%|███       | 33/108 [00:06<00:11,  6.55it/s]Embedding:  32%|███▏      | 35/108 [00:06<00:13,  5.60it/s]Embedding:  34%|███▍      | 37/108 [00:07<00:10,  6.84it/s]Embedding:  36%|███▌      | 39/108 [00:07<00:12,  5.61it/s]Embedding:  38%|███▊      | 41/108 [00:07<00:09,  6.91it/s]Embedding:  40%|███▉      | 43/108 [00:08<00:11,  5.70it/s]Embedding:  42%|████▏     | 45/108 [00:08<00:09,  6.88it/s]Embedding:  44%|████▎     | 47/108 [00:08<00:11,  5.38it/s]Embedding:  44%|████▍     | 48/108 [00:09<00:10,  5.74it/s]Embedding:  46%|████▋     | 50/108 [00:09<00:10,  5.51it/s]Embedding:  47%|████▋     | 51/108 [00:09<00:09,  5.99it/s]Embedding:  48%|████▊     | 52/108 [00:09<00:09,  6.03it/s]Embedding:  50%|█████     | 54/108 [00:10<00:09,  5.49it/s]Embedding:  52%|█████▏    | 56/108 [00:10<00:09,  5.70it/s]Embedding:  54%|█████▎    | 58/108 [00:10<00:08,  6.14it/s]Embedding:  55%|█████▍    | 59/108 [00:10<00:08,  5.70it/s]Embedding:  56%|█████▌    | 60/108 [00:11<00:07,  6.17it/s]Embedding:  57%|█████▋    | 62/108 [00:11<00:07,  5.77it/s]Embedding:  58%|█████▊    | 63/108 [00:11<00:07,  5.94it/s]Embedding:  60%|██████    | 65/108 [00:11<00:05,  7.64it/s]Embedding:  61%|██████    | 66/108 [00:12<00:09,  4.61it/s]Embedding:  63%|██████▎   | 68/108 [00:12<00:06,  6.46it/s]Embedding:  65%|██████▍   | 70/108 [00:12<00:08,  4.71it/s]Embedding:  67%|██████▋   | 72/108 [00:13<00:05,  6.28it/s]Embedding:  69%|██████▊   | 74/108 [00:13<00:06,  5.26it/s]Embedding:  70%|███████   | 76/108 [00:13<00:04,  6.80it/s]Embedding:  72%|███████▏  | 78/108 [00:14<00:05,  5.91it/s]Embedding:  74%|███████▍  | 80/108 [00:14<00:04,  6.50it/s]Embedding:  76%|███████▌  | 82/108 [00:14<00:04,  5.82it/s]Embedding:  78%|███████▊  | 84/108 [00:15<00:04,  5.95it/s]Embedding:  80%|███████▉  | 86/108 [00:15<00:03,  6.21it/s]Embedding:  81%|████████  | 87/108 [00:15<00:03,  6.17it/s]Embedding:  81%|████████▏ | 88/108 [00:15<00:03,  5.46it/s]Embedding:  83%|████████▎ | 90/108 [00:16<00:03,  5.75it/s]Embedding:  84%|████████▍ | 91/108 [00:16<00:02,  5.89it/s]Embedding:  85%|████████▌ | 92/108 [00:16<00:02,  5.35it/s]Embedding:  87%|████████▋ | 94/108 [00:16<00:02,  5.56it/s]Embedding:  89%|████████▉ | 96/108 [00:17<00:02,  5.83it/s]Embedding:  91%|█████████ | 98/108 [00:17<00:01,  6.33it/s]Embedding:  92%|█████████▏| 99/108 [00:17<00:01,  6.23it/s]Embedding:  93%|█████████▎| 100/108 [00:17<00:01,  5.33it/s]Embedding:  94%|█████████▍| 102/108 [00:18<00:00,  6.07it/s]Embedding:  96%|█████████▋| 104/108 [00:18<00:00,  6.18it/s]Embedding:  98%|█████████▊| 106/108 [00:18<00:00,  6.84it/s]Embedding: 100%|██████████| 108/108 [00:18<00:00,  8.53it/s]Embedding: 100%|██████████| 108/108 [00:18<00:00,  5.71it/s]
+Traceback (most recent call last):
+  File "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/shared_embedding.py", line 679, in <module>
+    metrics_df   = pd.DataFrame(history)
+  File "/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/lib64/python3.9/site-packages/pandas/core/frame.py", line 782, in __init__
+    mgr = dict_to_mgr(data, index, columns, dtype=dtype, copy=copy, typ=manager)
+  File "/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/lib64/python3.9/site-packages/pandas/core/internals/construction.py", line 503, in dict_to_mgr
+    return arrays_to_mgr(arrays, columns, index, dtype=dtype, typ=typ, consolidate=copy)
+  File "/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/lib64/python3.9/site-packages/pandas/core/internals/construction.py", line 114, in arrays_to_mgr
+    index = _extract_index(arrays)
+  File "/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/lib64/python3.9/site-packages/pandas/core/internals/construction.py", line 677, in _extract_index
+    raise ValueError("All arrays must be of the same length")
+ValueError: All arrays must be of the same length

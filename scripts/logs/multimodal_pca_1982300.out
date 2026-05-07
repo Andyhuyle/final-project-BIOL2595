@@ -1,0 +1,29 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 1982300
+##  Job Name : multimodal_pca
+##  Nodelist : gpu2709
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Wed Apr 29 01:29:06 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA L40S
+
+Starting training run : multimodal_pca
+Log  : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260429_132906.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260429_132906.err
+
+
+Training FAILED (exit code 1)
+Check error log: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260429_132906.err
+
+Last 20 lines of error log:
+Traceback (most recent call last):
+  File "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/shared_embedding.py", line 40, in <module>
+    for epoch in tqdm(range(EPOCHS), desc="Epochs"):
+NameError: name 'tqdm' is not defined

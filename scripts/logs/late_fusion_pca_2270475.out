@@ -1,0 +1,15 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 2270475
+##  Job Name : late_fusion_pca
+##  Nodelist : gpu3001
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Tue May  5 11:18:31 AM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+CUDA: True | GPU: NVIDIA L40S
+
+Late fusion training completed.
+Log: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/late_fusion_20260505_111831.log

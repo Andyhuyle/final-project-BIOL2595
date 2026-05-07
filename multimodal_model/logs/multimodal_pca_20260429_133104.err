@@ -1,0 +1,5 @@
+Epochs:   0%|          | 0/25 [00:00<?, ?it/s]Epochs:   0%|          | 0/25 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/shared_embedding.py", line 384, in <module>
+    model.train()
+NameError: name 'model' is not defined
