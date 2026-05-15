@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=late_fusion_pca
+#SBATCH --job-name=late_fusion
 #SBATCH --mail-user=huy_le@brown.edu
 #SBATCH --mail-type=END,FAIL
 #SBATCH --partition=gpu
@@ -10,9 +10,9 @@
 #SBATCH --output=logs/%x_%j.out
 #SBATCH --error=logs/%x_%j.err
 
-SCRIPT="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/late_fusion_baseline.py"
+SCRIPT="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/late_fusion_baseline.py"
 VENV="/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv"
-LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs"
+LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/logs"
 
 mkdir -p "$LOG_DIR" logs
 

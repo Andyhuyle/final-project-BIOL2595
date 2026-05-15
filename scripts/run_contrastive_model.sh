@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=multimodal_pca
+#SBATCH --job-name=contrastive_model
 #SBATCH --mail-user=huy_le@brown.edu
 #SBATCH --mail-type=END,FAIL
 #SBATCH --partition=gpu
@@ -13,10 +13,10 @@
 # =========================
 # CONFIG
 # =========================
-SCRIPT="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/shared_embedding.py"
+SCRIPT="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/contrastive_model.py"
 VENV="/oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv"
-RUN_NAME="multimodal_pca"
-LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs"
+RUN_NAME="contrastive_model"
+LOG_DIR="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/logs"
 
 mkdir -p "$LOG_DIR"
 mkdir -p logs

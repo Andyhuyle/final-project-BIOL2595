@@ -1,5 +1,5 @@
 """
-multimodal_contrastive.py
+contrastive_model.py
 
 Weakly supervised multimodal contrastive learning for prostate cancer severity.
 
@@ -74,7 +74,7 @@ IMAGE_DIR    = "/oscar/data/shared/ursa/kaggle_panda/train_images"
 EHR_MATRIX   = "/oscar/data/class/biol1595_2595/students/hgle/extracted/ehr_feature_matrix_balanced.csv"
 EHR_LABELS   = "/oscar/data/class/biol1595_2595/students/hgle/extracted/ehr_severity_balanced.csv"
 PANDA_CSV    = "/oscar/data/class/biol1595_2595/students/hgle/extracted/panda_balanced.csv"
-OUT_DIR      = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/shared_embedding"
+OUT_DIR      = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/contrastive_model"
 
 BATCH_SIZE   = 16
 EPOCHS       = 25
@@ -692,7 +692,7 @@ epoch_losses = history["train_loss"]   # length = EPOCHS
 
 batch_keys   = [k for k in history if k != "train_loss"]
 batch_df     = pd.DataFrame({k: history[k] for k in batch_keys})
-batch_path   = os.path.join(OUT_DIR, "training_metrics_batch.csv")
+batch_path   = os.path.join(OUT_DIR, "contrastive_training_metrics_batch.csv")
 batch_df.to_csv(batch_path, index=False)
 
 epoch_top1 = [
@@ -709,7 +709,7 @@ epoch_df   = pd.DataFrame({
         for k in batch_keys if k != "train_top1_acc"
     },
 })
-epoch_path = os.path.join(OUT_DIR, "training_metrics_epoch.csv")
+epoch_path = os.path.join(OUT_DIR, "contrastive_training_metrics_epoch.csv")
 epoch_df.to_csv(epoch_path, index=False)
 print(f"\n  Batch-level metrics  -> {batch_path}")
 print(f"  Epoch-level metrics  -> {epoch_path}")
@@ -722,7 +722,7 @@ ax2.plot(epoch_df["train_top1_acc"])
 ax2.set_xlabel("Epoch"); ax2.set_ylabel("Top-1 Accuracy")
 ax2.set_title("Cross-Modal Top-1 Accuracy (per epoch)")
 plt.tight_layout()
-curves_path = os.path.join(OUT_DIR, "training_curves.png")
+curves_path = os.path.join(OUT_DIR, "contrastive_training_curves.png")
 plt.savefig(curves_path, dpi=150); plt.close()
 print(f"  Training curves  -> {curves_path}")
 
@@ -731,11 +731,11 @@ print(f"  Training curves  -> {curves_path}")
 # =====================
 emb_df = pd.DataFrame(all_img, columns=[f"img_{i}" for i in range(all_img.shape[1])])
 emb_df["severity"] = all_sev
-emb_df.to_csv(os.path.join(OUT_DIR, "image_embeddings.csv"), index=False)
+emb_df.to_csv(os.path.join(OUT_DIR, "contrastive_image_embeddings.csv"), index=False)
 
 ehr_df = pd.DataFrame(all_ehr, columns=[f"ehr_{i}" for i in range(all_ehr.shape[1])])
 ehr_df["severity"] = all_sev
-ehr_df.to_csv(os.path.join(OUT_DIR, "ehr_embeddings.csv"), index=False)
+ehr_df.to_csv(os.path.join(OUT_DIR, "contrastive_ehr_embeddings.csv"), index=False)
 
 # Flatten per-class dicts for CSV
 flat = {k: v for k, v in results.items() if not isinstance(v, dict)}
@@ -744,5 +744,5 @@ for metric in ("per_f1", "per_pre", "per_rec", "per_auc"):
         flat[f"{metric}_{cls}"] = val
 pd.DataFrame([flat]).to_csv(os.path.join(OUT_DIR, "contrastive_results.csv"), index=False)
 
-torch.save(model.state_dict(), os.path.join(OUT_DIR, "multimodal_model.pt"))
+torch.save(model.state_dict(), os.path.join(OUT_DIR, "contrastive_model.pt"))
 print(f"  All outputs saved to {OUT_DIR}")

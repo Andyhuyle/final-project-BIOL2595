@@ -32,8 +32,9 @@ from sklearn.preprocessing import label_binarize
 
 # ── Config ──────────────────────────────────────────────────────────────────
 LATE_FUSION_DIR = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/late_fusion"
-CONTRASTIVE_DIR = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/shared_embedding"
-OUT_PATH        = os.path.join(LATE_FUSION_DIR, "auroc_curves.png")
+CONTRASTIVE_DIR = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/contrastive_model"
+OUTPUT_DIR      = "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs"
+OUT_PATH        = os.path.join(OUTPUT_DIR, "combined_auroc_curves.png")
 
 CLASSES     = [0, 1, 2]
 CLASS_NAMES = ["Low", "Moderate", "High"]

@@ -1,0 +1,38 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 2503603
+##  Job Name : contrastive_reject
+##  Nodelist : gpu2113
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Sun May 10 10:19:57 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA GeForce RTX 3090
+
+Starting training run : multimodal_pca
+Log  : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260510_221957.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260510_221957.err
+
+
+Training FAILED (exit code 1)
+Check error log: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260510_221957.err
+
+Last 20 lines of error log:
+/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/contrastive_cct.py:241: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler    = torch.cuda.amp.GradScaler()
+Epochs:   0%|          | 0/25 [00:00<?, ?it/s]
+Epoch 1/25:   0%|          | 0/215 [00:00<?, ?it/s][A/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/contrastive_cct.py:462: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+
+                                                   [AEpochs:   0%|          | 0/25 [00:04<?, ?it/s]
+Traceback (most recent call last):
+  File "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/contrastive_cct.py", line 473, in <module>
+    metrics = compute_batch_metrics(img_embs, ehr_embs, severities)
+  File "/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/contrastive_cct.py", line 318, in compute_batch_metrics
+    severities.unsqueeze(1)[:, mod_mask])
+IndexError: The shape of the mask [16] at index 0 does not match the shape of the indexed tensor [16, 1] at index 1

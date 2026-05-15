@@ -28,6 +28,17 @@ Standard ML metrics reported (consistent with multimodal_contrastive.py):
     - Confusion matrix (saved as PNG)
     - Calibration: Expected Calibration Error (ECE)
 
+Improvements aligned with multimodal_contrastive.py v2:
+    [1] High-severity oversampling
+        High class (n=688) receives a 2× sampling boost on top of standard
+        inverse-frequency weighting in WeightedRandomSampler, matching the
+        correction applied in the contrastive model.
+
+    [2] Focal loss replaces cross-entropy in both classifiers
+        Down-weights easy, well-classified examples so training focuses on
+        hard boundary cases — particularly the Moderate class.
+        gamma=2 is standard; weight=1.0 (full replacement, no auxiliary).
+
 Usage:
     python late_fusion_baseline.py
 """
@@ -74,6 +85,8 @@ EMB_DIM     = 128
 NUM_CLASSES = 3
 DEVICE      = "cuda" if torch.cuda.is_available() else "cpu"
 
+HIGH_OVERSAMPLE = 2.0    # [1] extra sampling weight for High class
+FOCAL_GAMMA     = 2.0    # [2] focal loss gamma for both classifiers
 SEVERITY_MAP   = {"low": 0, "moderate": 1, "high": 2}
 SEVERITY_NAMES = {0: "Low", 1: "Moderate", 2: "High"}
 
@@ -188,6 +201,30 @@ class EHRClassifier(nn.Module):
         return self.net(x)
 
 # =====================
+# FOCAL LOSS — improvement [2]
+# =====================
+class FocalLoss(nn.Module):
+    """
+    Focal loss for both image and EHR classifiers.
+
+    Down-weights easy examples so training concentrates on hard boundary
+    cases — particularly the Moderate class which sits between Low and High.
+    Replaces cross-entropy entirely (weight=1.0, no auxiliary component).
+    gamma=2 is standard; increase to 3 if Moderate recall stays low.
+    """
+    def __init__(self, gamma: float = FOCAL_GAMMA):
+        super().__init__()
+        self.gamma = gamma
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        ce = F.cross_entropy(logits, targets, reduction="none")
+        pt = torch.exp(-ce)
+        return ((1 - pt) ** self.gamma * ce).mean()
+
+
+focal_loss = FocalLoss(gamma=FOCAL_GAMMA)
+
+# =====================
 # TRAINING
 # =====================
 def train_model(model, loader, optimizer, scheduler, scaler, epochs, is_image):
@@ -203,12 +240,12 @@ def train_model(model, loader, optimizer, scheduler, scaler, epochs, is_image):
                 ).to(DEVICE)
                 labels = labels.to(DEVICE)
                 with torch.cuda.amp.autocast():
-                    loss = F.cross_entropy(model(patches_flat, B), labels)
+                    loss = focal_loss(model(patches_flat, B), labels)
             else:
                 X, labels = batch
                 X, labels = X.to(DEVICE), labels.to(DEVICE)
                 with torch.cuda.amp.autocast():
-                    loss = F.cross_entropy(model(X), labels)
+                    loss = focal_loss(model(X), labels)
 
             optimizer.zero_grad()
             scaler.scale(loss).backward()
@@ -416,9 +453,12 @@ print(f"  Image  train={len(panda_train):,}  test={len(panda_test):,}")
 print(f"  EHR    train={len(ehr_tr):,}  test={len(ehr_te):,}")
 
 # --- Image model ---
-print("\nStep 1/3 — Training ImageClassifier (cross-entropy, no EHR)...")
+print("\nStep 1/3 — Training ImageClassifier (focal loss, High oversampling, no EHR)...")
+# [1] High oversampling: standard inverse-frequency + extra HIGH_OVERSAMPLE boost
 class_counts   = panda_train["severity_int"].value_counts().to_dict()
-sample_weights = panda_train["severity_int"].map(lambda s: 1.0/class_counts.get(s,1)).values
+sample_weights = panda_train["severity_int"].map(
+    lambda s: (1.0 / class_counts.get(s, 1)) * (HIGH_OVERSAMPLE if s == 2 else 1.0)
+).values   # severity 2 = High in 3-class scheme
 sampler = WeightedRandomSampler(torch.tensor(sample_weights).double(),
                                  len(panda_train), replacement=True)
 
@@ -435,7 +475,7 @@ img_scaler = torch.cuda.amp.GradScaler()
 train_model(img_model, img_train_dl, img_optim, img_sched, img_scaler, EPOCHS, is_image=True)
 
 # --- EHR model ---
-print("\nStep 2/3 — Training EHRClassifier (cross-entropy, no images)...")
+print("\nStep 2/3 — Training EHRClassifier (focal loss, no images)...")
 ehr_train_dl = DataLoader(EHRDataset(X_ehr[ehr_tr], y_ehr[ehr_tr]),
                            batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 ehr_test_dl  = DataLoader(EHRDataset(X_ehr[ehr_te], y_ehr[ehr_te]),
@@ -508,6 +548,6 @@ for r in results:
 pd.DataFrame(rows).to_csv(
     os.path.join(OUT_DIR, "late_fusion_results.csv"), index=False
 )
-torch.save(img_model.state_dict(), os.path.join(OUT_DIR, "image_classifier.pt"))
-torch.save(ehr_model.state_dict(), os.path.join(OUT_DIR, "ehr_classifier.pt"))
+torch.save(img_model.state_dict(), os.path.join(OUT_DIR, "late_fusion_image_classifier.pt"))
+torch.save(ehr_model.state_dict(), os.path.join(OUT_DIR, "late_fusion_ehr_classifier.pt"))
 print(f"\n  All outputs saved to {OUT_DIR}")

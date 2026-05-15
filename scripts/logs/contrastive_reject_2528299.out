@@ -1,0 +1,23 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 2528299
+##  Job Name : contrastive_reject
+##  Nodelist : gpu2116
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Mon May 11 12:25:05 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA GeForce RTX 3090
+
+Starting training run : contrastive_reject
+Log  : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_reject_20260511_122505.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_reject_20260511_122505.err
+
+
+Training completed successfully.
+Log saved to: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_reject_20260511_122505.log

@@ -1,0 +1,23 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 2535960
+##  Job Name : contrastive_cct
+##  Nodelist : gpu2708
+##      CPUs : 
+##  Mem/Node : 32768 MB
+## Directory : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/scripts
+##   Job Started : Mon May 11 09:27:57 PM EDT 2026
+###############################################################################
+Python  : /oscar/data/class/biol1595_2595/students/hgle/ai_heathcare_venv/bin/python
+Version : Python 3.9.21
+
+PyTorch  : 2.8.0+cu128
+CUDA     : True
+GPU      : NVIDIA L40S
+
+Starting training run : contrastive_cct
+Log  : /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_cct_20260511_212757.log
+Error: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_cct_20260511_212757.err
+
+
+Training completed successfully.
+Log saved to: /oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/contrastive_cct_20260511_212757.log

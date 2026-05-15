@@ -1,0 +1,13 @@
+Lmod has detected the following error: The following module(s) are unknown:
+"python/3.9.0"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "python/3.9.0"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+[2026-05-10T00:18:44.032] error: *** JOB 2484559 ON gpu2106 CANCELLED AT 2026-05-10T00:18:44 DUE to SIGNAL Terminated ***

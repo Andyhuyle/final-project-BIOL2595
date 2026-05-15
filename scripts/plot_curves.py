@@ -389,17 +389,17 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--contrastive_ckpt",
-        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/shared_embedding/multimodal_model.pt",
+        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/outputs/contrastive_model/contrastive_model.pt",
         help="Path to contrastive model .pt checkpoint (contains history list)"
     )
     parser.add_argument(
         "--contrastive_log",
-        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/multimodal_pca_20260427_204042.log",
+        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/logs/contrastive_model_20260514_174707.log",
         help="Path (or glob) to contrastive model SLURM log file"
     )
     parser.add_argument(
         "--late_fusion_log",
-        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_model/logs/late_fusion_20260427_235419.log",
+        default="/oscar/data/class/biol1595_2595/students/hgle/final-project-BIOL2595/multimodal_models/logs/late_fusion_20260514_174819.log",
         help="Path (or glob) to late fusion SLURM log file"
     )
     parser.add_argument(
